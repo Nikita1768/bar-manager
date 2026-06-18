@@ -10,4 +10,5 @@ class SiteController extends Controller
     {
         return view('main.index');
     }
+
 }

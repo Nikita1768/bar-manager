@@ -1,20 +1,17 @@
 <?php
 
 use App\Http\Controllers\DrinkController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SiteController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/main', [SiteController::class, 'index'])->name('main');
+Route::get('/', [SiteController::class, 'index'])->name('main');
 Route::resource('drinks', DrinkController::class);
+Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory');
+Route::get('/inventory/create', [InventoryController::class, 'create'])->name('inventory.create');
+Route::post('/inventory', [InventoryController::class, 'store'])->name('inventory.store');
 
-//Route::get('/dashboard', function () {
-//    return view('dashboard');
-//})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

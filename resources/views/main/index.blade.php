@@ -1,880 +1,594 @@
-<html lang="en"><head>
+
+
+
+
+
+
+
+
+
+<!-- MAKE SOME INVENTORY CRUD -->
+<!--
+Make a simple start page with {{ $Slot }}
+After this you can other CRUD make
+-->
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bar-manager</title>
-
+    <title>bar-manager dashboard</title>
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #e8dfd1;
-            --text: #171714;
-            --muted: #746d63;
-            --dark: #191713;
-            --panel: #fff8eb;
-            --line: #d8ccbb;
-            --green: #5ea878;
-            --yellow: #c88f2a;
-            --red: #b84c3d;
-            --copper: #a85f32;
+        :root, [data-theme="light"] {
+            --font-body: 'Satoshi', Arial, sans-serif;
+            --font-display: 'Satoshi', Arial, sans-serif;
+            --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+            --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+            --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+            --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+            --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --space-10: 2.5rem;
+            --space-12: 3rem;
+            --space-16: 4rem;
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-full: 9999px;
+            --transition-interactive: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+            --color-bg: #f4ecdf;
+            --color-surface: #fff8eb;
+            --color-surface-2: #fffdf7;
+            --color-surface-offset: #eee1cf;
+            --color-border: #d8ccbb;
+            --color-divider: #d8ccbb;
+            --color-text: #171714;
+            --color-text-muted: #746d63;
+            --color-text-faint: #a59b8f;
+            --color-text-inverse: #fff8ed;
+            --color-primary: #a85f32;
+            --color-primary-hover: #8d4d24;
+            --color-primary-active: #6f3c1a;
+            --color-primary-highlight: #ecd7c8;
+            --color-success: #437a22;
+            --color-success-highlight: #d8e8ce;
+            --color-warning: #b97912;
+            --color-warning-highlight: #f4dfaa;
+            --color-error: #b84c3d;
+            --color-error-highlight: #f4d4cc;
+            --color-sidebar: #191713;
+            --shadow-sm: 0 1px 2px rgba(40,31,20,.06);
+            --shadow-md: 0 10px 24px rgba(40,31,20,.1);
+            --shadow-lg: 0 16px 40px rgba(40,31,20,.14);
         }
 
-        * {
-            box-sizing: border-box;
+        [data-theme="dark"] {
+            --color-bg: #171614;
+            --color-surface: #1f1d1a;
+            --color-surface-2: #25231f;
+            --color-surface-offset: #2c2925;
+            --color-border: #3b3832;
+            --color-divider: #35322d;
+            --color-text: #ece7df;
+            --color-text-muted: #b1a89a;
+            --color-text-faint: #80796f;
+            --color-text-inverse: #151412;
+            --color-primary: #d99a6d;
+            --color-primary-hover: #e6ae84;
+            --color-primary-active: #f3c59c;
+            --color-primary-highlight: #3f3128;
+            --color-success: #78b457;
+            --color-success-highlight: #33422d;
+            --color-warning: #e4b24f;
+            --color-warning-highlight: #483b24;
+            --color-error: #d97b6d;
+            --color-error-highlight: #49302a;
+            --color-sidebar: #11100e;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,.22);
+            --shadow-md: 0 10px 24px rgba(0,0,0,.28);
+            --shadow-lg: 0 16px 40px rgba(0,0,0,.38);
         }
 
+        * , *::before, *::after { box-sizing: border-box; }
+        html, body { height: 100%; margin: 0; overflow: hidden; }
         body {
-            margin: 0;
-            color: var(--text);
-            font-family: Arial, sans-serif;
+            min-height: 100dvh;
+            font-family: var(--font-body);
+            font-size: var(--text-base);
+            line-height: 1.5;
+            color: var(--color-text);
             background:
-                linear-gradient(135deg, rgba(168, 95, 50, 0.16), transparent 34%),
-                linear-gradient(315deg, rgba(94, 168, 120, 0.14), transparent 30%),
-                var(--bg);
+                radial-gradient(circle at top left, rgba(168,95,50,.10), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(94,168,120,.08), transparent 24%),
+                var(--color-bg);
+        }
+        img, svg { display: block; max-width: 100%; }
+        button, input, select, textarea { font: inherit; color: inherit; }
+        button {
+            border: 0;
+            cursor: pointer;
+            transition: background var(--transition-interactive), color var(--transition-interactive), border-color var(--transition-interactive), transform var(--transition-interactive);
+        }
+        :focus-visible {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
+            border-radius: var(--radius-sm);
         }
 
-        button,
-        input {
-            font: inherit;
-        }
-
-        .layout {
+        .app {
             display: grid;
-            grid-template-columns: 220px 1fr 300px;
-            min-height: 100vh;
+            grid-template-columns: 240px minmax(0, 1fr) 320px;
+            grid-template-rows: 100dvh;
+            height: 100dvh;
         }
 
         .sidebar {
-            padding: 24px 16px;
-            color: #fff8ed;
-            background: var(--dark);
+            overflow-y: auto;
+            padding: var(--space-6) var(--space-4);
+            background: var(--color-sidebar);
+            color: var(--color-text-inverse);
+            border-right: 1px solid rgba(255,255,255,.06);
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 28px;
-        }
-
-        .logo__mark {
+        .brand {
             display: grid;
-            width: 42px;
-            height: 42px;
-            place-items: center;
-            border-radius: 8px;
-            background: var(--copper);
-            font-weight: 700;
+            gap: var(--space-3);
+            margin-bottom: var(--space-8);
         }
 
-        .logo span {
+        .brand__link {
             display: block;
-            color: #c7bcad;
-            font-size: 12px;
-        }
-
-        .menu {
-            display: grid;
-            gap: 6px;
-        }
-
-        .menu__item {
             width: 100%;
-            padding: 11px 12px;
-            color: #e8dfd1;
-            text-align: left;
-            border: 0;
-            border-radius: 7px;
-            background: transparent;
-            cursor: pointer;
+            padding: 0;
+            margin: 0;
+            text-decoration: none;
+            color: inherit;
         }
 
-        .menu__item:hover,
-        .menu__item--active {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .content {
-            min-width: 0;
-            padding: 24px;
-        }
-
-        .header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        h1,
-        h2,
-        p {
-            margin-top: 0;
-        }
-
-        h1 {
-            margin-bottom: 6px;
-            font-size: 42px;
-            font-weight: 700;
-        }
-
-        h2 {
-            margin-bottom: 0;
-            font-size: 18px;
-        }
-
-        p {
-            color: var(--muted);
-        }
-
-        .header__actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .button {
-            min-height: 38px;
-            padding: 0 14px;
-            border: 1px solid var(--line);
-            border-radius: 7px;
-            cursor: pointer;
-        }
-
-        .button--light {
-            color: var(--text);
-            background: var(--panel);
-        }
-
-        .button--dark {
-            color: #fff8ed;
-            border-color: var(--dark);
-            background: var(--dark);
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .stat-card,
-        .panel {
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            background: rgba(255, 248, 235, 0.92);
-            box-shadow: 0 12px 28px rgba(40, 31, 20, 0.1);
-        }
-
-        .stat-card {
-            padding: 16px;
-        }
-
-        .stat-card__label {
+        .brand__logo {
             display: block;
-            margin-bottom: 10px;
-            color: var(--muted);
-            font-size: 12px;
+            width: 100%;
+            max-width: 220px;
+            min-height: 72px;
+            padding: 0;
+            margin: 0;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            object-fit: contain;
+        }
+
+        .brand__meta {
+            color: rgba(255,248,237,.65);
+            font-size: var(--text-xs);
+            letter-spacing: .08em;
             text-transform: uppercase;
         }
 
-        .stat-card__value {
-            display: block;
-            font-size: 28px;
-            font-weight: 700;
+        .theme-toggle {
+            width: 100%;
+            min-height: 44px;
+            padding: 0 var(--space-4);
+            border-radius: var(--radius-md);
+            color: var(--color-text-inverse);
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.08);
+            text-align: left;
         }
 
-        .stat-card__note {
-            display: block;
-            margin-top: 8px;
-            color: var(--green);
-            font-size: 13px;
-        }
-
-        .grid {
+        .nav {
             display: grid;
-            grid-template-columns: 1.4fr 0.8fr;
-            gap: 16px;
+            gap: var(--space-2);
+            margin-top: var(--space-6);
         }
 
-        .panel {
-            padding: 16px;
+        .nav__item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            width: 100%;
+            min-height: 46px;
+            padding: 0 var(--space-4);
+            border-radius: var(--radius-md);
+            color: #efe3d3;
+            background: transparent;
+            text-align: left;
         }
 
-        .panel--flat {
-            box-shadow: none;
+        .nav__item:hover,
+        .nav__item.is-active {
+            background: rgba(255,255,255,.10);
         }
 
+        .nav__dot {
+            width: 9px;
+            height: 9px;
+            border-radius: var(--radius-full);
+            background: currentColor;
+            opacity: .7;
+            flex: none;
+        }
+
+        .main {
+            overflow-y: auto;
+            padding: var(--space-6);
+        }
+
+        .topbar {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+
+        .eyebrow {
+            margin: 0 0 var(--space-2);
+            color: var(--color-text-muted);
+            font-size: var(--text-xs);
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+
+        .title {
+            margin: 0 0 var(--space-2);
+            font-size: var(--text-xl);
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            margin: 0;
+            color: var(--color-text-muted);
+            max-width: 68ch;
+        }
+
+        .actions {
+            display: flex;
+            gap: var(--space-2);
+            flex-wrap: wrap;
+        }
+
+        .button {
+            min-height: 40px;
+            padding: 0 var(--space-4);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border);
+            background: var(--color-surface);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .button--primary {
+            border-color: var(--color-primary);
+            color: #fff8ed;
+            background: var(--color-primary);
+        }
+
+        .button--primary:hover { background: var(--color-primary-hover); }
+        .button--soft { background: var(--color-surface-2); }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: var(--space-3);
+            margin-bottom: var(--space-4);
+        }
+
+        .card, .panel {
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            background: rgba(255,248,235,.88);
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(8px);
+        }
+
+        [data-theme="dark"] .card,
+        [data-theme="dark"] .panel {
+            background: rgba(31,29,26,.92);
+        }
+
+        .card { padding: var(--space-4); }
+        .label {
+            display: block;
+            color: var(--color-text-muted);
+            font-size: var(--text-xs);
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            margin-bottom: var(--space-3);
+        }
+        .value {
+            font-size: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+            font-weight: 700;
+            font-variant-numeric: tabular-nums lining-nums;
+        }
+        .note {
+            display: block;
+            margin-top: var(--space-2);
+            color: var(--color-success);
+            font-size: var(--text-sm);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.45fr) minmax(280px, .85fr);
+            gap: var(--space-4);
+        }
+
+        .panel { padding: var(--space-4); }
         .panel__header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 14px;
+            gap: var(--space-3);
+            margin-bottom: var(--space-4);
         }
-
-        .table-wrap {
-            overflow-x: auto;
+        .panel__title {
+            margin: 0;
+            font-size: var(--text-lg);
+        }
+        .panel__meta {
+            color: var(--color-text-muted);
+            font-size: var(--text-sm);
         }
 
         table {
             width: 100%;
-            min-width: 640px;
+            min-width: 620px;
             border-collapse: collapse;
+            font-variant-numeric: tabular-nums lining-nums;
         }
-
-        th,
-        td {
-            padding: 12px 8px;
-            border-bottom: 1px solid var(--line);
+        th, td {
+            padding: .85rem .6rem;
+            border-bottom: 1px solid var(--color-divider);
             text-align: left;
+            vertical-align: middle;
         }
-
         th {
-            color: var(--muted);
-            font-size: 12px;
+            color: var(--color-text-muted);
+            font-size: var(--text-xs);
             text-transform: uppercase;
+            letter-spacing: .08em;
         }
+        td { font-size: var(--text-sm); }
+        .table-wrap { overflow-x: auto; }
 
-        td {
-            font-size: 14px;
-        }
-
-        .stock-title {
-            display: block;
-            font-weight: 700;
-        }
-
-        .stock-subtitle {
-            display: block;
-            color: var(--muted);
-            font-size: 12px;
-        }
+        .item-title { display: block; font-weight: 700; }
+        .item-subtitle { display: block; color: var(--color-text-muted); font-size: var(--text-xs); margin-top: .15rem; }
 
         .progress {
-            width: 120px;
-            height: 9px;
+            width: 132px;
+            height: 10px;
+            border-radius: var(--radius-full);
+            background: var(--color-surface-offset);
             overflow: hidden;
-            border-radius: 99px;
-            background: #ddd2c2;
         }
-
         .progress__bar {
             height: 100%;
-            border-radius: 99px;
-            background: var(--green);
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--color-primary), #d7a275);
         }
 
         .badge {
-            display: inline-block;
-            padding: 5px 8px;
-            border-radius: 99px;
-            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            min-height: 26px;
+            padding: 0 .65rem;
+            border-radius: var(--radius-full);
+            font-size: var(--text-xs);
             font-weight: 700;
         }
+        .badge--ok { color: var(--color-success); background: var(--color-success-highlight); }
+        .badge--warning { color: #7b540f; background: var(--color-warning-highlight); }
+        .badge--danger { color: #823428; background: var(--color-error-highlight); }
 
-        .badge--ok {
-            color: #2f6d47;
-            background: #d7ecd9;
-        }
-
-        .badge--warning {
-            color: #70500d;
-            background: #f4dfaa;
-        }
-
-        .badge--danger {
-            color: #81342b;
-            background: #f4d4cc;
-        }
-
-        .recipe-list,
-        .task-list,
-        .event-list {
+        .list {
             display: grid;
-            gap: 10px;
+            gap: var(--space-3);
         }
-
-        .recipe,
-        .task,
-        .event {
-            padding: 12px;
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            background: #fffdf7;
-        }
-
-        .recipe {
+        .list-card {
             display: flex;
             justify-content: space-between;
-            gap: 12px;
+            gap: var(--space-3);
+            padding: var(--space-4);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-surface-2);
         }
-
-        .recipe span,
-        .task span,
-        .event span {
+        .list-card small,
+        .list-card span {
             display: block;
-            margin-top: 4px;
-            color: var(--muted);
-            font-size: 13px;
+            color: var(--color-text-muted);
+            font-size: var(--text-sm);
+            margin-top: .25rem;
         }
-
-        .recipe__margin {
-            color: var(--green);
+        .pill-value {
+            color: var(--color-success);
             font-weight: 700;
             white-space: nowrap;
+            font-variant-numeric: tabular-nums lining-nums;
         }
 
-        .rightbar {
-            display: grid;
-            align-content: start;
-            gap: 16px;
-            padding: 24px 16px;
-            border-left: 1px solid var(--line);
-            background: rgba(255, 248, 235, 0.6);
+        .sidepane {
+            overflow-y: auto;
+            padding: var(--space-6) var(--space-4);
+            border-left: 1px solid var(--color-border);
+            background: rgba(255,248,235,.55);
         }
+        [data-theme="dark"] .sidepane { background: rgba(31,29,26,.7); }
 
-        .search input {
+        .search input,
+        .input,
+        .select {
             width: 100%;
-            min-height: 42px;
-            padding: 0 12px;
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            background: var(--panel);
+            min-height: 44px;
+            padding: 0 .85rem;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-surface);
+            color: var(--color-text);
         }
 
-        .task {
+        .stack { display: grid; gap: var(--space-4); }
+        .check {
             display: grid;
             grid-template-columns: auto 1fr;
-            gap: 10px;
+            gap: var(--space-3);
             align-items: start;
+            padding: var(--space-3);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border);
+            background: var(--color-surface-2);
         }
-
-        .task input {
+        .check input {
             width: 18px;
             height: 18px;
-            accent-color: var(--copper);
+            margin-top: .15rem;
+            accent-color: var(--color-primary);
+        }
+        .muted { color: var(--color-text-muted); }
+        .tiny { font-size: var(--text-xs); }
+
+        .view { display: none; }
+        .view.is-active { display: block; }
+
+        .two-col,
+        .three-col {
+            display: grid;
+            gap: var(--space-4);
+        }
+        .two-col { grid-template-columns: repeat(2, minmax(0,1fr)); }
+        .three-col { grid-template-columns: repeat(3, minmax(0,1fr)); }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0,1fr));
+            gap: var(--space-3);
+            margin-bottom: var(--space-4);
         }
 
-        @media (max-width: 1100px) {
-            .layout {
-                grid-template-columns: 190px 1fr;
-            }
-
-            .rightbar {
-                grid-column: 1 / -1;
-                border-top: 1px solid var(--line);
-                border-left: 0;
-            }
+        .bar-list { display: grid; gap: var(--space-3); }
+        .bar-row { display: grid; gap: .45rem; }
+        .bar-row__top {
+            display: flex;
+            justify-content: space-between;
+            gap: var(--space-3);
+            font-size: var(--text-sm);
         }
 
-        @media (max-width: 760px) {
-            .layout {
-                display: block;
-            }
+        .feed-item,
+        .event,
+        .task,
+        .form-grid__item {
+            padding: var(--space-4);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-surface-2);
+        }
 
-            .sidebar {
-                padding: 16px;
-            }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: var(--space-3);
+        }
+        .form-grid__item label {
+            display: block;
+            margin-bottom: .4rem;
+            font-size: var(--text-xs);
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
 
-            .menu {
-                grid-template-columns: repeat(3, 1fr);
-            }
+        .footer-note {
+            margin-top: var(--space-4);
+            color: var(--color-text-muted);
+            font-size: var(--text-sm);
+        }
 
-            .header {
-                display: block;
-            }
+        @media (max-width: 1200px) {
+            .app { grid-template-columns: 220px minmax(0, 1fr); }
+            .sidepane { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--color-border); }
+            .stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
+        }
 
-            .header__actions {
-                margin-top: 14px;
-            }
-
-            .stats,
-            .grid {
+        @media (max-width: 920px) {
+            html, body { overflow: auto; }
+            .app {
                 grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+                height: auto;
             }
+            .sidebar, .main, .sidepane { overflow: visible; }
+            .nav { grid-template-columns: repeat(2, minmax(0,1fr)); }
+            .content-grid, .two-col, .three-col, .kpi-grid, .form-grid { grid-template-columns: 1fr; }
+            .stats { grid-template-columns: 1fr; }
+            .topbar { flex-direction: column; }
+        }
 
-            h1 {
-                font-size: 32px;
-            }
+        @media (max-width: 640px) {
+            .main, .sidebar, .sidepane { padding: var(--space-4); }
+            .nav { grid-template-columns: 1fr; }
+            .actions { width: 100%; }
+            .button { width: 100%; }
         }
     </style>
 </head>
-
 <body>
-<div class="layout">
-    <aside class="sidebar">
-        <div class="logo">
-            <div class="logo__mark">BM</div>
-            <div>
-                <strong>Bar-manager</strong>
-                <span>bar inventory</span>
-            </div>
-        </div>
-
-        <nav class="menu">
-            <button class="menu__item menu__item--active">Shift</button>
-            <button class="menu__item">Inventory</button>
-            <button class="menu__item">Cocktails</button>
-            <button class="menu__item">Purchases</button>
-            <button class="menu__item">Write-offs</button>
-            <button class="menu__item">Reports</button>
-        </nav>
-    </aside>
-
-    <main class="content">
-        <header class="header">
-            <div>
-                <h1>Today's Shift</h1>
-                <p>Stock levels, purchases, write-offs, and margins in one working screen.</p>
-            </div>
-
-            <div class="header__actions">
-                <button class="button button--light">Refresh</button>
-                <button class="button button--dark">New Purchase</button>
-            </div>
-        </header>
-
-        <section class="stats" id="stats">
-            <article class="stat-card">
-                <span class="stat-card__label">Revenue</span>
-                <strong class="stat-card__value">186 420 $</strong>
-                <span class="stat-card__note">+14% vs last Friday</span>
-            </article>
-
-            <article class="stat-card">
-                <span class="stat-card__label">Cost Ratio</span>
-                <strong class="stat-card__value">27.8%</strong>
-                <span class="stat-card__note">within recipe target</span>
-            </article>
-
-            <article class="stat-card">
-                <span class="stat-card__label">To Order</span>
-                <strong class="stat-card__value">9 items</strong>
-                <span class="stat-card__note">3 critical</span>
-            </article>
-
-            <article class="stat-card">
-                <span class="stat-card__label">Write-offs</span>
-                <strong class="stat-card__value">4 860 $</strong>
-                <span class="stat-card__note">above average</span>
-            </article>
-        </section>
-
-        <section class="grid">
-            <div class="panel">
-                <div class="panel__header">
-                    <h2>Stock Control</h2>
-                    <button class="button button--light">Critical</button>
-                </div>
-
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Stock</th>
-                            <th>Level</th>
-                            <th>Usage</th>
-                            <th>Status</th>
-                        </tr>
-                        </thead>
-                        <tbody id="stockTable">
-                        <tr>
-                            <td>
-                                <span class="stock-title">Aperol</span>
-                                <span class="stock-subtitle">liquor · Italy</span>
-                            </td>
-                            <td>1.4 l</td>
-                            <td>
-                                <div class="progress">
-                                    <div class="progress__bar" style="width: 18%"></div>
-                                </div>
-                            </td>
-                            <td>3.2 l/week</td>
-                            <td>
-                                <span class="badge badge--danger">Critical</span>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <span class="stock-title">Lime</span>
-                                <span class="stock-subtitle">fruit · fresh</span>
-                            </td>
-                            <td>4.8 kg</td>
-                            <td>
-                                <div class="progress">
-                                    <div class="progress__bar" style="width: 36%"></div>
-                                </div>
-                            </td>
-                            <td>9.6 kg/week</td>
-                            <td>
-                                <span class="badge badge--warning">Order</span>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <span class="stock-title">Gin London Dry</span>
-                                <span class="stock-subtitle">liquor · base</span>
-                            </td>
-                            <td>7.0 l</td>
-                            <td>
-                                <div class="progress">
-                                    <div class="progress__bar" style="width: 72%"></div>
-                                </div>
-                            </td>
-                            <td>5.1 l/week</td>
-                            <td>
-                                <span class="badge badge--ok">OK</span>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <span class="stock-title">Simple Syrup</span>
-                                <span class="stock-subtitle">prep · 1:1</span>
-                            </td>
-                            <td>2.2 l</td>
-                            <td>
-                                <div class="progress">
-                                    <div class="progress__bar" style="width: 42%"></div>
-                                </div>
-                            </td>
-                            <td>4.5 l/week</td>
-                            <td>
-                                <span class="badge badge--warning">Prep</span>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="panel">
-                <div class="panel__header">
-                    <h2>Recipe Cards</h2>
-                    <button class="button button--light">Add</button>
-                </div>
-
-                <div class="recipe-list" id="recipeList">
-                    <article class="recipe">
-                        <div>
-                            <strong>Aperol Spritz</strong>
-                            <span>Aperol, prosecco, soda, orange</span>
-                        </div>
-                        <div class="recipe__margin">72%</div>
-                    </article>
-
-                    <article class="recipe">
-                        <div>
-                            <strong>Gin Basil Smash</strong>
-                            <span>gin, basil, lemon, syrup</span>
-                        </div>
-                        <div class="recipe__margin">68%</div>
-                    </article>
-
-                    <article class="recipe">
-                        <div>
-                            <strong>Whiskey Sour</strong>
-                            <span>bourbon, lemon, syrup, bitter</span>
-                        </div>
-                        <div class="recipe__margin">64%</div>
-                    </article>
-
-                    <article class="recipe">
-                        <div>
-                            <strong>Paloma</strong>
-                            <span>tequila, grapefruit, lime, soda</span>
-                        </div>
-                        <div class="recipe__margin">70%</div>
-                    </article>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <aside class="rightbar">
-        <div class="search">
-            <input type="search" placeholder="Search item or supplier">
-        </div>
-
-        <section class="panel panel--flat">
-            <div class="panel__header">
-                <h2>Tasks</h2>
-            </div>
-            <div class="task-list" id="taskList">
-                <label class="task">
-                    <input type="checkbox">
-                    <span>
-                <strong>Check Rum Plantation</strong>
-                <span>before opening · storage</span>
-              </span>
-                </label>
-
-                <label class="task">
-                    <input type="checkbox" checked="">
-                    <span>
-                <strong>Confirm ice delivery</strong>
-                <span>North Supply · 80 kg</span>
-              </span>
-                </label>
-
-                <label class="task">
-                    <input type="checkbox">
-                    <span>
-                <strong>Close fruit write-off</strong>
-                <span>act #284 · bar</span>
-              </span>
-                </label>
-            </div>
-        </section>
-
-        <section class="panel panel--flat">
-            <div class="panel__header">
-                <h2>Bar Feed</h2>
-            </div>
-            <div class="event-list" id="eventList">
-                <article class="event">
-                    <strong>Aperol dropped below minimum</strong>
-                    <span>Auto-order prepared for 6 bottles</span>
-                </article>
-
-                <article class="event">
-                    <strong>Write-off: lime 1.6 kg</strong>
-                    <span>Reason: soft fruit, pending head bartender approval</span>
-                </article>
-
-                <article class="event">
-                    <strong>Prosecco price changed</strong>
-                    <span>Supplier increased the price by 7%</span>
-                </article>
-            </div>
-        </section>
-    </aside>
+<div class="app">
+    <!-- SIDEBAR -->
+    <x-sidebar />
+    <!-- MAIN MENU -->
+    <x-main />
+    <!-- RIGHT MENU -->
+    <x-sidepane />
+    @include('inventory.create');
 </div>
 
 <script>
-    const stats = [
-        {
-            label: "Revenue",
-            value: "186 420 $",
-            note: "+14% vs last Friday",
-        },
-        {
-            label: "Cost Ratio",
-            value: "27.8%",
-            note: "within recipe target",
-        },
-        {
-            label: "To Order",
-            value: "9 items",
-            note: "3 critical",
-        },
-        {
-            label: "Write-offs",
-            value: "4 860 $",
-            note: "above average",
-        },
-    ];
+    const navButtons = document.querySelectorAll('[data-view-target]');
+    const views = document.querySelectorAll('.view');
+    const root = document.documentElement;
+    const themeButton = document.querySelector('[data-theme-toggle]');
+    let theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 
-    const stockItems = [
-        {
-            name: "Aperol",
-            category: "liquor · Italy",
-            amount: "1.4 l",
-            percent: 18,
-            usage: "3.2 l/week",
-            status: "Critical",
-            statusType: "danger",
-        },
-        {
-            name: "Lime",
-            category: "fruit · fresh",
-            amount: "4.8 kg",
-            percent: 36,
-            usage: "9.6 kg/week",
-            status: "Order",
-            statusType: "warning",
-        },
-        {
-            name: "Gin London Dry",
-            category: "liquor · base",
-            amount: "7.0 l",
-            percent: 72,
-            usage: "5.1 l/week",
-            status: "OK",
-            statusType: "ok",
-        },
-        {
-            name: "Simple Syrup",
-            category: "prep · 1:1",
-            amount: "2.2 l",
-            percent: 42,
-            usage: "4.5 l/week",
-            status: "Prep",
-            statusType: "warning",
-        },
-    ];
-
-    const recipes = [
-        {
-            name: "Aperol Spritz",
-            ingredients: "Aperol, prosecco, soda, orange",
-            margin: "72%",
-        },
-        {
-            name: "Gin Basil Smash",
-            ingredients: "gin, basil, lemon, syrup",
-            margin: "68%",
-        },
-        {
-            name: "Whiskey Sour",
-            ingredients: "bourbon, lemon, syrup, bitter",
-            margin: "64%",
-        },
-        {
-            name: "Paloma",
-            ingredients: "tequila, grapefruit, lime, soda",
-            margin: "70%",
-        },
-    ];
-
-    const tasks = [
-        {
-            title: "Check Rum Plantation",
-            subtitle: "before opening · storage",
-            done: false,
-        },
-        {
-            title: "Confirm ice delivery",
-            subtitle: "North Supply · 80 kg",
-            done: true,
-        },
-        {
-            title: "Close fruit write-off",
-            subtitle: "act #284 · bar",
-            done: false,
-        },
-    ];
-
-    const events = [
-        {
-            title: "Aperol dropped below minimum",
-            text: "Auto-order prepared for 6 bottles",
-        },
-        {
-            title: "Write-off: lime 1.6 kg",
-            text: "Reason: soft fruit, pending head bartender approval",
-        },
-        {
-            title: "Prosecco price changed",
-            text: "Supplier increased the price by 7%",
-        },
-    ];
-
-    function renderStats() {
-        const statsElement = document.querySelector("#stats");
-
-        statsElement.innerHTML = stats
-            .map((item) => {
-                return `
-            <article class="stat-card">
-              <span class="stat-card__label">${item.label}</span>
-              <strong class="stat-card__value">${item.value}</strong>
-              <span class="stat-card__note">${item.note}</span>
-            </article>
-          `;
-            })
-            .join("");
+    function applyTheme(nextTheme) {
+        theme = nextTheme;
+        root.setAttribute('data-theme', theme);
+        themeButton.textContent = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
     }
 
-    function renderStockTable() {
-        const tableElement = document.querySelector("#stockTable");
-
-        tableElement.innerHTML = stockItems
-            .map((item) => {
-                return `
-            <tr>
-              <td>
-                <span class="stock-title">${item.name}</span>
-                <span class="stock-subtitle">${item.category}</span>
-              </td>
-              <td>${item.amount}</td>
-              <td>
-                <div class="progress">
-                  <div class="progress__bar" style="width: ${item.percent}%"></div>
-                </div>
-              </td>
-              <td>${item.usage}</td>
-              <td>
-                <span class="badge badge--${item.statusType}">${item.status}</span>
-              </td>
-            </tr>
-          `;
-            })
-            .join("");
+    function activateView(name) {
+        navButtons.forEach((button) => button.classList.toggle('is-active', button.dataset.viewTarget === name));
+        views.forEach((view) => view.classList.toggle('is-active', view.id === `view-${name}`));
+        window.location.hash = name;
     }
 
-    function renderRecipes() {
-        const recipeElement = document.querySelector("#recipeList");
+    navButtons.forEach((button) => {
+        button.addEventListener('click', () => activateView(button.dataset.viewTarget));
+    });
 
-        recipeElement.innerHTML = recipes
-            .map((item) => {
-                return `
-            <article class="recipe">
-              <div>
-                <strong>${item.name}</strong>
-                <span>${item.ingredients}</span>
-              </div>
-              <div class="recipe__margin">${item.margin}</div>
-            </article>
-          `;
-            })
-            .join("");
-    }
+    themeButton.addEventListener('click', () => {
+        applyTheme(theme === 'dark' ? 'light' : 'dark');
+    });
 
-    function renderTasks() {
-        const taskElement = document.querySelector("#taskList");
-
-        taskElement.innerHTML = tasks
-            .map((item) => {
-                const checked = item.done ? "checked" : "";
-
-                return `
-            <label class="task">
-              <input type="checkbox" ${checked}>
-              <span>
-                <strong>${item.title}</strong>
-                <span>${item.subtitle}</span>
-              </span>
-            </label>
-          `;
-            })
-            .join("");
-    }
-
-    function renderEvents() {
-        const eventElement = document.querySelector("#eventList");
-
-        eventElement.innerHTML = events
-            .map((item) => {
-                return `
-            <article class="event">
-              <strong>${item.title}</strong>
-              <span>${item.text}</span>
-            </article>
-          `;
-            })
-            .join("");
-    }
-
-    renderStats();
-    renderStockTable();
-    renderRecipes();
-    renderTasks();
-    renderEvents();
+    const initialView = window.location.hash.replace('#', '') || 'shift';
+    applyTheme(theme);
+    activateView(initialView);
 </script>
-
-
-</body></html>
+</body>
+</html>
