@@ -1,7 +1,5 @@
 <main class="main">
-    <x-shift-menu/>
-    <x-inventory-menu />
-    <x-cocktails-menu />
+    <x-shift-menu />
     <x-purchases />
     <x-offs-menu />
     <x-report-menu />

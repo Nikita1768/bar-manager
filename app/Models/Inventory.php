@@ -10,7 +10,7 @@ class Inventory extends Model
 {
     /** @use HasFactory<\Database\Factories\InventoryFactory> */
     use HasFactory;
-    protected $fillable = ['name', 'team', 'note', 'count'];
+    protected $fillable = ['name', 'team', 'note', 'count', 'status'];
     protected $casts = [
         'status' => InventoryStatusEnum::class,
     ];

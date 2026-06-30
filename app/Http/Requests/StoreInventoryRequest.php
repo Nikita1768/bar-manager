@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\InventoryStatusEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreInventoryRequest extends FormRequest
 {
@@ -23,10 +25,11 @@ class StoreInventoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|integer|exists:inventories,id',
-            'name' => 'required|string|max:255|unique:inventories,name',
+            'name' => 'required|string|max:255',
             'note' => 'integer|min:1|max:5',
-            'team' => 'required|string|max:255|exists:teams,name',
+            'team' => 'required|string|max:255',
+            'status' => ['required', Rule::enum(InventoryStatusEnum::class)],
+            'count' => 'required|integer|min:1|max:20',
         ];
     }
 }

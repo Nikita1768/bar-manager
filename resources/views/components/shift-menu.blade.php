@@ -1,4 +1,4 @@
-<section class="view is-active" id="view-shift">
+<section class="inventorySection">
     <header class="topbar">
         <div>
             <p class="eyebrow">Operations</p>

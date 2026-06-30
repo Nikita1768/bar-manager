@@ -21,6 +21,6 @@ class InventoryMenu extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.inventory-menu');
+        return view('inventory.index');
     }
 }

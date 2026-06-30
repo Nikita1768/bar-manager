@@ -28,7 +28,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return view('welcome');
+        return view('main');
+        //Is this working?
     }
 
     /**
