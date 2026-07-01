@@ -39,7 +39,7 @@ class InventoryController extends Controller
     public function store(StoreInventoryRequest $request): RedirectResponse
     {
         Inventory::create($request->validated());
-        return to_route('components.inventory.create');
+        return to_route('inventory.create')->with('Message', 'Inventory created successfully.');
     }
 
     /**
@@ -55,18 +55,9 @@ class InventoryController extends Controller
      */
     public function update(UpdateInventoryRequest $request, Inventory $inventory): RedirectResponse
     {
-
-
-
-//        НЕ ШЛЕТ КОНКРЕТНЫЙ ИНВЕНТАРЬ, НЕЛЬЗЯ ОТРЕДАКТИРОВАТЬ КОЛЛ-ВО, НЕЛЬЗЯ ИЗМЕНИТЬ НАЗВАНИЕ. СКОРЕЕ ВСЕГО ПРОБЛЕМА ВЫШЕЛ, С ЭДИТА НЕ ЛЕТИТ КОНКРЕТНОГО ИНВЕНТАРЯ
-//
-//
-//
-//
-//
         $validated = $request->validated();
         $inventory->update($validated);
-        return back();
+        return to_route('inventory.edit', $inventory)->with('Message', 'Update was successful!');
     }
 
     /**
@@ -74,6 +65,7 @@ class InventoryController extends Controller
      */
     public function destroy(Inventory $inventory)
     {
-        //
+        $inventory->delete();
+        return to_route('inventory')->with('Message', 'Inventory deleted successfully.');
     }
 }

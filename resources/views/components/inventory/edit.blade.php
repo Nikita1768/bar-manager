@@ -1,8 +1,8 @@
 @php use App\Enums\InventoryStatusEnum; @endphp
 <x-main-component title="Edit Inventory">
     <x-sidebar/>
-    <div class="content">
-        <header class="header">
+    <section class="inventorySection">
+        <header class="topbar">
             <div>
                 <h1>Edit Inventory</h1>
                 <p>Edit a inventory session for the team, current status, notes, and counted positions.</p>
@@ -11,6 +11,11 @@
 
         <section class="grid" style="grid-template-columns: 1.1fr 0.9fr;">
             <div class="panel">
+                @if(session('Message'))
+                    <div class="alert alert-success">
+                        {{ session('Message') }}
+                    </div>
+                @endif
                 <div class="panel__header">
                     <h2>Inventory Form</h2>
                 </div>
@@ -26,7 +31,7 @@
                                 type="text"
                                 name="name"
                                 class="form-input"
-                                value="{{ old('name') }}"
+                                value="{{ old('name', $inventory->name ?? '') }}"
                                 placeholder="Shaker"
                                 required
                             >
@@ -72,7 +77,7 @@
                                 type="number"
                                 name="note"
                                 class="form-input"
-                                value="{{ old('note') }}"
+                                value="{{ old($inventory->note) }}"
                                 placeholder="0-5"
                                 min="0"
                                 max="5"
@@ -101,11 +106,12 @@
                         </div>
                     </div>
                     <div class="saveInventoryButton">
-                        <button form="inventoryCreateForm" type="submit" class="button button--primary">Save Inventory</button>
+                        <button form="inventoryCreateForm" type="submit" class="button button--primary">Save Inventory
+                        </button>
                     </div>
                 </form>
             </div>
         </section>
-    </div>
-<x-sidepane />
+    </section>
+    <x-sidepane/>
 </x-main-component>

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? 'Bar Manager' }}</title>
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <style>
         :root, [data-theme="light"] {
             --font-body: 'Satoshi', Arial, sans-serif;
@@ -95,7 +97,7 @@
 
         body {
             min-height: 100dvh;
-            font-family: var(--font-body);
+            font-family: var(--font-body), serif;
             font-size: var(--text-base);
             line-height: 1.5;
             color: var(--color-text);
@@ -133,6 +135,11 @@
             grid-template-columns: 240px minmax(0, 1fr) 320px;
             grid-template-rows: 100dvh;
             height: 100dvh;
+            color: var(--color-text);
+        }
+
+        .app * {
+            color: inherit;
         }
 
         .sidebar {
@@ -274,10 +281,8 @@
             text-decoration: none;
 
         }
+
         .buttonMenu {
-            margin-left: 10px;
-            margin-bottom: 5px;
-            height: 23px;
             padding: 0 var(--space-4);
             border-radius: var(--radius-md);
             border: 1px solid var(--color-border);
@@ -285,6 +290,7 @@
             box-shadow: var(--shadow-sm);
             text-decoration: none;
         }
+
         .button--primary {
             border-color: var(--color-primary);
             color: #fff8ed;
@@ -578,11 +584,23 @@
         }
 
         .bar-row__top {
-            display: flex;
-            justify-content: space-between;
-            gap: var(--space-3);
-            font-size: var(--text-sm);
+            display: grid;
+            grid-template-columns: 1fr 80px auto;
+            align-items: center;
+            gap: 12px;
         }
+
+        .button--danger {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .button--danger:hover {
+            background: #bb2d3b;
+            border-color: #b02a37;
+        }
+
         .inventorySection {
             margin: 25px;
         }
@@ -601,6 +619,12 @@
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: var(--space-3);
+        }
+
+        .form-input {
+            display: grid;
+            width: 200px;
+            color: #0a0a0a;
         }
 
         .form-grid__item label {
@@ -680,12 +704,15 @@
             }
 
             .actions {
-                width: 100%;
+                display: flex;
+                gap: 8px;
+                align-items: center;
             }
 
             .button {
                 width: 100%;
             }
+
         }
     </style>
 </head>
@@ -693,36 +720,33 @@
 <div class="app">
     {{ $slot }}
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    applyTheme(savedTheme);
     const navButtons = document.querySelectorAll('[data-view-target]');
     const views = document.querySelectorAll('.view');
     const root = document.documentElement;
     const themeButton = document.querySelector('[data-theme-toggle]');
-    let theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 
-    function applyTheme(nextTheme) {
-        theme = nextTheme;
-        root.setAttribute('data-theme', theme);
-        themeButton.textContent = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+    if (themeButton) {
+        themeButton.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            applyTheme(newTheme);
+        });
     }
 
-    // function activateView(name) {
-    //     navButtons.forEach((button) => button.classList.toggle('is-active', button.dataset.viewTarget === name));
-    //     views.forEach((view) => view.classList.toggle('is-active', view.id === `view-${name}`));
-    //     window.location.hash = name;
-    // }
-
-    navButtons.forEach((button) => {
-        button.addEventListener('click', () => activateView(button.dataset.viewTarget));
-    });
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    }
 
     themeButton.addEventListener('click', () => {
         applyTheme(theme === 'dark' ? 'light' : 'dark');
     });
 
     const initialView = window.location.hash.replace('#', '') || 'shift';
-    applyTheme(theme);
-    activateView(initialView);
 </script>
 </body>
 </html>

@@ -1,8 +1,8 @@
 @php use App\Enums\InventoryStatusEnum; @endphp
 <x-main-component title="New Inventory">
     <x-sidebar/>
-    <div class="content">
-        <header class="header">
+    <section class="inventorySection">
+        <header class="topbar">
             <div>
                 <h1>Create Inventory</h1>
                 <p>Create a new inventory session for the team, current status, notes, and counted positions.</p>
@@ -18,6 +18,11 @@
                 <form id="inventoryCreateForm" method="POST" action="{{ route('inventory.store') }}"
                       class="inventory-form">
                     @csrf
+                    @if(session('Message'))
+                        <div class="alert alert-success">
+                            {{ session('Message') }}
+                        </div>
+                    @endif
                     <div class="form-grid">
                         <div class="form-grid__item" style="grid-column: 1 / -1;">
                             <label for="name">Inventory name</label>
@@ -31,7 +36,7 @@
                                 required
                             >
                             @error('name')
-                            <small class="form-error">{{ $message }}</small>
+                            <small class="alert-danger">{{ $message }}</small>
                             @enderror
                         </div>
 
@@ -47,7 +52,7 @@
                                 required
                             >
                             @error('team')
-                            <small class="form-error">{{ $message }}</small>
+                            <small class="alert-danger">{{ $message }}</small>
                             @enderror
                         </div>
 
@@ -61,7 +66,7 @@
                                 @endforeach
                             </select>
                             @error('status')
-                            <small class="form-error">{{ $message }}</small>
+                            <small class="alert-danger">{{ $message }}</small>
                             @enderror
                         </div>
 
@@ -79,7 +84,7 @@
                                 required
                             >
                             @error('note')
-                            <small class="form-error">{{ $message }}</small>
+                            <small class="alert-danger">{{ $message }}</small>
                             @enderror
                         </div>
 
@@ -96,16 +101,17 @@
                                 required
                             >
                             @error('count')
-                            <small class="form-error">{{ $message }}</small>
+                            <small class="alert-danger">{{ $message }}</small>
                             @enderror
                         </div>
                     </div>
                     <div class="saveInventoryButton">
-                        <button form="inventoryCreateForm" type="submit" class="button button--primary">Save Inventory</button>
+                        <button form="inventoryCreateForm" type="submit" class="button button--primary">Save Inventory
+                        </button>
                     </div>
                 </form>
             </div>
         </section>
-    </div>
-<x-sidepane />
+    </section>
+    <x-sidepane/>
 </x-main-component>

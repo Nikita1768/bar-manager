@@ -13,9 +13,9 @@ Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory
 Route::get('/inventory/create', [InventoryController::class, 'create'])->name('inventory.create');
 Route::post('/inventory', [InventoryController::class, 'store'])->name('inventory.store');
 Route::get('/inventory/{inventory}/edit', [InventoryController::class, 'edit'])->name('inventory.edit');
-Route::put('/inventory/edit/{id}', [InventoryController::class, 'update'])->name('inventory.update');
+Route::put('/inventory/{inventory}', [InventoryController::class, 'update'])->name('inventory.update');
+Route::delete('/inventory/{inventory}', [InventoryController::class, 'destroy'])->name('inventory.destroy');
 Route::get('/cocktails', [CocktailController::class, 'index'])->name('cocktails');
-
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
